@@ -1,19 +1,49 @@
 import React from 'react';
 import './LoginForm.css';
 
+
 const LoginForm = () => {
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const acc = e.target.elements.username.value;
+        const password = e.target.elements.password.value;
+
+        // Send the acc and password to the server
+        fetch('http://localhost:3000/api/check_credentials', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ acc, password })
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Handle the response from the server
+                if (data.authenticated) {
+                    // User is authenticated, perform necessary actions
+                    // Pop out a notification saying "Yes"
+                    // existing username password combinations.
+                    // Temp123 asamant
+                    // Life15$ skharel.
+                    alert("Yes");
+                } else {
+                   alert("No");
+                }
+            })
+            .catch(error => {
+                // Handle any errors that occurred during the request
+            });
+    };
+
     return (
         <div className='wrapper'>
-            <form action="">
+            <form onSubmit={handleSubmit}>
                 <h1>Login</h1>
                 <div className="input-box">
-                    <input type="text" placeholder='Username' required />
+                    <input type="text" name="username" placeholder='Username' required />
                 </div>
                 <div className="input-box">
-                    <input type="userID" placeholder='UserID' required />
-                </div>
-                <div className="input-box">
-                    <input type="password" placeholder='Password' required />
+                    <input type="password" name="password" placeholder='Password' required />
                 </div>
 
                 <div className="remember-forgot">

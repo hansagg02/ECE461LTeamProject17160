@@ -1,3 +1,5 @@
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 def encrypt(inputText, N, D):
     # Check if N is >= 1
     if N < 1:
@@ -42,11 +44,24 @@ def decrypt(encryptedText, N, D):
 
     return decryptedText
 
-def check_credentials(acc, password):
+app = Flask(__name__)
+CORS(app)
+@app.route('/api/check_credentials', methods=['POST'])
+def check_credentials():
+    data = request.get_json()
+    acc = data['acc']
+    password = data['password']
+    encrypted_acc = encrypt(acc, 3, 1)
     encrypted_password = encrypt(password, 3, 1)  # Encrypt the password using the encrypt function
-    with open('database.txt', 'r') as file:
+
+    with open('src\database.txt', 'r') as file:
         for line in file:
-            stored_acc, stored_password = line.strip().split(',')
-            if acc == stored_acc and encrypted_password == stored_password:
-                return True
-    return False
+            stored_acc, stored_password = line.strip().split(' ')
+            if encrypted_acc == stored_acc and encrypted_password == stored_password:
+                return jsonify({'authenticated': True}) 
+
+    return jsonify({'authenticated': False})
+
+if __name__ == '__main__':
+    app.run(port=3000)
+
