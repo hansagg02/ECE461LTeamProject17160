@@ -7,7 +7,6 @@ const LoginForm = () => {
         e.preventDefault();
         const acc = e.target.elements.username.value;
         const password = e.target.elements.password.value;
-
         // Send the acc and password to the server
         fetch('http://localhost:3000/api/check_credentials', {
             method: 'POST',
@@ -18,21 +17,12 @@ const LoginForm = () => {
         })
             .then(response => response.json())
             .then(data => {
-                // Handle the response from the server
                 if (data.authenticated) {
-                    // User is authenticated, perform necessary actions
-                    // Pop out a notification saying "Yes"
-                    // existing username password combinations.
-                    // Temp123 asamant
-                    // Life15$ skharel.
                     alert("Yes");
                 } else {
                    alert("No");
                 }
-            })
-            .catch(error => {
-                // Handle any errors that occurred during the request
-            });
+            }).catch(error => {});
     };
 
     return (
