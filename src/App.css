@@ -36,3 +36,44 @@
     transform: rotate(360deg);
   }
 }
+
+.superblock {
+  display: flex; /* Add flexbox layout */
+  flex-direction: row; /* Set flex direction to column */
+  height: 110px; /* Set height */
+  border: 1px solid #000; /* Add border */
+  background-color: rgb(229, 229, 229)  ;
+  margin: 20px;
+}
+
+.horizontal-container {
+  display: flex; /* Add flexbox layout */
+}
+
+.vertical-container {
+  display: flex; /* Add flexbox layout */
+  flex-direction: column; /* Set flex direction to column */
+}
+
+.vertical-item {
+  margin-bottom: 10px; /* Add spacing between items */
+}
+
+.horizontal-item {
+  margin-left: 10px; /* Add spacing between items */
+}
+
+.highlighted {
+  background-color: #b1ffca; /* Add background color */
+}
+
+.switch {
+  margin-top: 30px;
+}
+.text{
+  width: 200px; /* Set a fixed width for the div */
+  overflow: hidden; /* Hide any content that overflows the div */
+  white-space: nowrap; /* Prevent text from wrapping */
+  text-overflow: ellipsis;
+  margin-left: 10px; /* Add spacing between items */
+}
