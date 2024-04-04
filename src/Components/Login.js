@@ -91,8 +91,8 @@ function Login() {
     .then(data => {
         if (data.code === 200) {
             // setSignupMessage("Created account for user: " + data.username);
-            localStorage.setItem('userID', data.userID);
-            navigate("/projects", { state: { username: data.username, id: data.userID, valid: true } });
+            localStorage.setItem('userID', data.newUserID);
+            navigate("/projects", { state: { username: data.newUsername, id: data.newUserID, valid: true } });
         } else {
             setSignupMessage("Response code: " + data.code + " Response message: " + data.error);
         }
