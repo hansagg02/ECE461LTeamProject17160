@@ -51,8 +51,6 @@ function Login() {
     if (newPassword !== confirmPassword) {
         setSignupMessage('Passwords do not match');
         return;
-    } else {
-        setSignupMessage('Passwords matched');
     }
     // navigate("/projects", { state: { username: 1, id: 1, valid: true } });
     const data = { newUsername, newUserID, newPassword };
