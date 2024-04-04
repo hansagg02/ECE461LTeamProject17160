@@ -56,7 +56,7 @@ function Login() {
     }
     // navigate("/projects", { state: { username: 1, id: 1, valid: true } });
     const data = { newUsername, newUserID, newPassword };
-    fetch('/signup', {
+    fetch('http://localhost:5000/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)

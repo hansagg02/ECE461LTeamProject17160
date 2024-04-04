@@ -8,7 +8,7 @@ const UserLogin = () => {
         const password = e.target.elements.password.value;
 
         // Send the acc and password to the server
-        fetch('http://localhost:3000/api/check_credentials', {
+        fetch('http://localhost:5000/check_credentials', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
