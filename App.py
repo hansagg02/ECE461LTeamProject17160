@@ -3,7 +3,7 @@ import os
 from flask import Flask, jsonify, request
 from flask_cors import cross_origin, CORS
 
-from encrypt import encrypt
+import main
 import Database
 
 app = Flask(__name__, static_folder='./build', static_url_path='/')
@@ -15,8 +15,8 @@ def check_credentials():
     data = request.get_json()
     acc = data['acc']
     password = data['password']
-    encrypted_acc = encrypt(acc, 3, 1)
-    encrypted_password = encrypt(password, 3, 1)  # Encrypt the password using the encrypt function
+    encrypted_acc = main.encrypt(acc, 3, 1)
+    encrypted_password = main.encrypt(password, 3, 1)  # Encrypt the password using the encrypt function
 
     with open('src\database.txt', 'r') as file:
         for line in file:
