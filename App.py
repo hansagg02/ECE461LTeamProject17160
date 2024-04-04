@@ -39,7 +39,7 @@ def signup():
         return jsonify({"error": "User already exists", "code": 409}), 409
 
     # Encrypt the password
-    encrypted_password = encrypt(newPassword)
+    encrypted_password = main.encrypt(newPassword)
 
     # Create the user in the database
     Database.create_user(username, newUserID, encrypted_password)
