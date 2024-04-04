@@ -1,9 +1,6 @@
-import os
-
 from flask import Flask, jsonify, request
 from flask_cors import cross_origin, CORS
 
-import main
 import Database
 
 app = Flask(__name__, static_folder='./build', static_url_path='/')
@@ -15,8 +12,8 @@ def check_credentials():
     data = request.get_json()
     acc = data['acc']
     password = data['password']
-    encrypted_acc = main.encrypt(acc, 3, 1)
-    encrypted_password = main.encrypt(password, 3, 1)  # Encrypt the password using the encrypt function
+    encrypted_acc = encrypt(acc, 3, 1)
+    encrypted_password = encrypt(password, 3, 1)  # Encrypt the password using the encrypt function
 
     with open('src\database.txt', 'r') as file:
         for line in file:
@@ -89,6 +86,38 @@ def signup():
     Database.create_user(username, encrypted_ID, encrypted_password)
 
     return jsonify({"message": "User created successfully", "code": 200}), 200
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+
+    username = data.get('username')
+    userID = data.get('userID')  
+    password = data.get('password')
+
+    encrypted_ID = encrypt(userID, 3, 1)
+    encrypted_password = encrypt(password, 3, 1)
+
+    # Check if user credential matches database
+    if Database.user_credentials_matched(encrypted_ID, encrypted_password):
+       return jsonify({"message": "User logged in successfully", "code": 200}), 200
+        
+    return jsonify({"message": "Invalid login credentials", "code": 401}), 401
+
+@app.route('/create_project', methods=['POST'])
+def create_project():
+    data = request.json
+    projectName = data.get('projectName')
+    description = data.get('description')
+    projectID = data.get('projectId')
+    userID = data.get('userId')
+
+    # Check if user already exists
+    if Database.project_exists(projectID):
+        return jsonify({"error": "Project already exists", "code": 409}), 409
+    
+    Database.create_project(projectName, description, projectID, userID)
+    return jsonify({"message": "Project created successfully", "code": 200}), 201
 
 @app.route('/')
 @cross_origin()

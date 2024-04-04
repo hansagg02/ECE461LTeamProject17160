@@ -10,7 +10,7 @@ UserDB = client["Users"]
 users = UserDB["users1"]
 
 def user_exists(userID):
-    if users.find_one({"id": userID}):
+    if users.find_one({"userID": userID}):
         return True
     return False
 
@@ -22,4 +22,35 @@ def create_user(username, userID, password):
             "projects" : []
         }
     users.insert_one(new_user)
-    print("User inserted successfully:", new_user)
+    
+
+def user_credentials_matched(userID, password):
+    if not user_exists(userID):
+        return False
+    myquery={"userID": userID}
+    user = users.find_one(myquery)
+    if user["password"] == password:
+        return True
+    else:
+        return False
+    
+ProjectDB = client["Projects"]
+projects = ProjectDB["project1"]
+    
+def project_exists(projectID):
+    if projects.find_one({"projectID": projectID}):
+        return True
+    return False
+
+def create_project(projectName, description, projectID, userID):
+    new_project = {
+            "projectName" :projectName,
+            "description" :description,
+            "projectID" : projectID,
+        }
+    projects.insert_one(new_project)
+    # Add project to user
+    users.update_one({"userID": userID}, {"$push": {"projects": projectID}})
+    
+    
+    

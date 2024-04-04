@@ -42,8 +42,31 @@ function Login() {
   };        
 
   const handleLogin = async (e) => {
-    navigate("/projects", { state: { username: 1, id: 1, valid: true } });
-
+    e.preventDefault();
+    // navigate("/projects", { state: { username: 1, id: 1, valid: true } });
+    const data = { username, userID, password };
+    fetch('http://localhost:5000/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.code === 200) {
+            setLoginMessage("User successfully logged in: " + data.username);
+            navigate("/projects", { state: { username: data.username, id: data.userID, valid: true } });
+        } else {
+            setLoginMessage("Response code: " + data.code + " Response message: " + data.error);
+        }
+    })
+    .catch(error => {
+        setLoginMessage("Failed to log in account: " + error.message);
+    });
   };
 
   const handleSignup = async (e) => {
@@ -52,7 +75,7 @@ function Login() {
         setSignupMessage('Passwords do not match');
         return;
     }
-    // navigate("/projects", { state: { username: 1, id: 1, valid: true } });
+   
     const data = { newUsername, newUserID, newPassword };
     fetch('http://localhost:5000/signup', {
         method: 'POST',
@@ -67,9 +90,9 @@ function Login() {
     })
     .then(data => {
         if (data.code === 200) {
-            setSignupMessage("Created account for user: " + data.username);
-            localStorage.setItem('userId', data.id);
-            navigate("/projects", { state: { username: data.username, id: data.id, valid: true } });
+            // setSignupMessage("Created account for user: " + data.username);
+            localStorage.setItem('userID', data.userID);
+            navigate("/projects", { state: { username: data.username, id: data.userID, valid: true } });
         } else {
             setSignupMessage("Response code: " + data.code + " Response message: " + data.error);
         }
