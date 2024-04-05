@@ -106,17 +106,13 @@ def join_project():
     data = request.json
     projectID = data.get('joinProjectID')
     userID = data.get('userID')
-    
-     # Print projectID and userID for debugging
-    print("Received projectID:", projectID)
-    print("Received userID:", userID)
 
     # Check if project exists
     if not Database.project_exists(projectID):
         return jsonify({"error": "Project does not exist", "code": 409}), 409
     
     project_name = Database.get_project_name(userID, projectID)
-    return jsonify({"projectName": project_name}), 200
+    return jsonify({"projectName": project_name, "code": 200}), 201
 
 @app.route('/')
 @cross_origin()

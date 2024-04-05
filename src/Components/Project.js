@@ -71,7 +71,6 @@ function Projects() {
                 joinProjectID,
                 userID
             });
-    
             if (response.data.code === 200) {
                 setProjectName(response.data.projectName);
                 setJoinMessage("Project added successfully!");
