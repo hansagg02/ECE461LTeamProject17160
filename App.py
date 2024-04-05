@@ -7,22 +7,6 @@ app = Flask(__name__, static_folder='./build', static_url_path='/')
 cors = CORS(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
-@app.route('/api/check_credentials', methods=['POST'])
-def check_credentials():
-    data = request.get_json()
-    acc = data['acc']
-    password = data['password']
-    encrypted_acc = encrypt(acc, 3, 1)
-    encrypted_password = encrypt(password, 3, 1)  # Encrypt the password using the encrypt function
-
-    with open('src\database.txt', 'r') as file:
-        for line in file:
-            stored_acc, stored_password = line.strip().split(' ')
-            if encrypted_acc == stored_acc and encrypted_password == stored_password:
-                return jsonify({'authenticated': True}) 
-
-    return jsonify({'authenticated': False})
-
 def encrypt(inputText, N, D):
     # Check if N is >= 1
     if N < 1:
@@ -75,15 +59,14 @@ def signup():
     newUserID = data.get('newUserID')  
     newPassword = data.get('newPassword')
 
-    encrypted_ID = encrypt(newUserID, 3, 1)
     encrypted_password = encrypt(newPassword, 3, 1)
 
     # Check if user already exists
-    if Database.user_exists(encrypted_ID):
+    if Database.user_exists(newUserID):
         return jsonify({"error": "User already exists", "code": 409}), 409
 
     # Create the user in the database
-    Database.create_user(username, encrypted_ID, encrypted_password)
+    Database.create_user(username, newUserID, encrypted_password)
 
     return jsonify({"message": "User created successfully", "code": 200}), 200
 
@@ -95,11 +78,10 @@ def login():
     userID = data.get('userID')  
     password = data.get('password')
 
-    encrypted_ID = encrypt(userID, 3, 1)
     encrypted_password = encrypt(password, 3, 1)
 
     # Check if user credential matches database
-    if Database.user_credentials_matched(encrypted_ID, encrypted_password):
+    if Database.user_credentials_matched(userID, encrypted_password):
        return jsonify({"message": "User logged in successfully", "code": 200}), 200
         
     return jsonify({"message": "Invalid login credentials", "code": 401}), 401
@@ -109,8 +91,8 @@ def create_project():
     data = request.json
     projectName = data.get('projectName')
     description = data.get('description')
-    projectID = data.get('projectId')
-    userID = data.get('userId')
+    projectID = data.get('projectID')
+    userID = data.get('userID')
 
     # Check if user already exists
     if Database.project_exists(projectID):
@@ -118,6 +100,23 @@ def create_project():
     
     Database.create_project(projectName, description, projectID, userID)
     return jsonify({"message": "Project created successfully", "code": 200}), 201
+
+@app.route('/join_project', methods=['POST'])
+def join_project():
+    data = request.json
+    projectID = data.get('joinProjectID')
+    userID = data.get('userID')
+    
+     # Print projectID and userID for debugging
+    print("Received projectID:", projectID)
+    print("Received userID:", userID)
+
+    # Check if project exists
+    if not Database.project_exists(projectID):
+        return jsonify({"error": "Project does not exist", "code": 409}), 409
+    
+    project_name = Database.get_project_name(userID, projectID)
+    return jsonify({"projectName": project_name}), 200
 
 @app.route('/')
 @cross_origin()

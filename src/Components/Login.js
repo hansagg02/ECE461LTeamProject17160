@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function Login() {
   const navigate = useNavigate();
@@ -43,30 +44,19 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    // navigate("/projects", { state: { username: 1, id: 1, valid: true } });
-    const data = { username, userID, password };
-    fetch('http://localhost:5000/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.code === 200) {
-            setLoginMessage("User successfully logged in: " + data.username);
-            navigate("/projects", { state: { username: data.username, id: data.userID, valid: true } });
-        } else {
-            setLoginMessage("Response code: " + data.code + " Response message: " + data.error);
-        }
-    })
-    .catch(error => {
-        setLoginMessage("Failed to log in account: " + error.message);
-    });
+    try {
+      const response = await axios.post('http://localhost:5000/login', {username, userID, password });
+      
+      if (response.data.code === 200) {
+        navigate('/projects', { state: { userID } });
+      } else {
+        // Handle login error
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch (error) {
+      // Handle network error
+      setLoginMessage("Failed to log in account: " + error.message);
+    }
   };
 
   const handleSignup = async (e) => {
@@ -76,31 +66,19 @@ function Login() {
         return;
     }
    
-    const data = { newUsername, newUserID, newPassword };
-    fetch('http://localhost:5000/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.code === 200) {
-            // setSignupMessage("Created account for user: " + data.username);
-            localStorage.setItem('userID', data.newUserID);
-            navigate("/projects", { state: { username: data.newUsername, id: data.newUserID, valid: true } });
-        } else {
-            setSignupMessage("Response code: " + data.code + " Response message: " + data.error);
-        }
-    })
-    .catch(error => {
-        setSignupMessage("Failed to create account: " + error.message);
-    });
-        
+    try {
+      const response = await axios.post('http://localhost:5000/signup', {newUsername, newUserID, newPassword});
+      
+      if (response.data.code === 200) {
+        navigate('/projects', { state: { newUserID } });
+      } else {
+        // Handle sign up error
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+    } catch (error) {
+      // Handle network error
+      setLoginMessage("Failed to create account: " + error.message);
+    }     
   };
 
   return (

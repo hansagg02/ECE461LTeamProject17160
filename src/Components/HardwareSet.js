@@ -89,19 +89,18 @@ function HardwareSet() {
     };
 
     return (
-        <div className="resource-container">
+        <div>
             <Logout/> 
             <h1>{projectName}</h1>
-            <div className="resource-section">
+            <div>
                 {/* HWSet1 Section */}
                 <h2>{hwSet1.name}</h2>
-                <div className="resource-info">
+                <div>
                     <p>Capacity: {hwSet1.capacity}</p>
                     <p>Availability: {hwSet1.availability}</p>
                 </div>
-                <div className="resource-actions">
+                <div>
                     <input
-                        className="resource-input"
                         type="number"
                         value={requestSet1}
                         onChange={(e) => setRequestSet1(e.target.value)}
@@ -111,16 +110,15 @@ function HardwareSet() {
                     <button className="resource-button" onClick={() => handleCheckOut(hwSet1, requestSet1)}>Check Out</button>
                 </div>
             </div>
-            <div className="resource-section">
+            <div>
                 {/* HWSet2 Section */}
                 <h2>{hwSet2.name}</h2>
-                <div className="resource-info">
+                <div>
                     <p>Capacity: {hwSet2.capacity}</p>
                     <p>Availability: {hwSet2.availability}</p>
                 </div>
-                <div className="resource-actions">
+                <div>
                     <input
-                        className="resource-input"
                         type="number"
                         value={requestSet2}
                         onChange={(e) => setRequestSet2(e.target.value)}

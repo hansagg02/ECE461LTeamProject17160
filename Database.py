@@ -51,6 +51,18 @@ def create_project(projectName, description, projectID, userID):
     projects.insert_one(new_project)
     # Add project to user
     users.update_one({"userID": userID}, {"$push": {"projects": projectID}})
+
+def get_project_name(userID, projectID):
+    user = users.find_one({"userID": userID})
+    user_projects = user.get('projects', [])
+    # Add projectID to user if it is not associated with them already
+    if not projectID in user_projects:
+        users.update_one({"userID": userID}, {"$push": {"projects": projectID}})
+    project = projects.find_one({"projectID": projectID})
+    project_name = project.get('projectName')
+    return project_name
+    
+
     
     
     
