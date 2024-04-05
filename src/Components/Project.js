@@ -72,9 +72,8 @@ function Projects() {
                 userID
             });
             if (response.data.code === 200) {
-                setProjectName(response.data.projectName);
                 setJoinMessage("Project added successfully!");
-                navigate('/hardware', { state: { projectName: projectName } });
+                navigate('/hardware', { state: { projectName: response.data.projectName } });
             } else {
                 setJoinMessage("Response code: " + response.data.code + " Response message: " + response.data.error);
             }
