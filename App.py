@@ -82,6 +82,8 @@ def login():
 
     # Check if user credential matches database
     if Database.user_credentials_matched(userID, encrypted_password):
+       # Update user's username if they entered a different username during login
+       Database.update_username(userID, username)
        return jsonify({"message": "User logged in successfully", "code": 200}), 200
         
     return jsonify({"message": "Invalid login credentials", "code": 401}), 401
@@ -113,6 +115,35 @@ def join_project():
     
     project_name = Database.get_project_name(userID, projectID)
     return jsonify({"projectName": project_name, "code": 200}), 201
+
+@app.route('/fetch_set_data', methods=['POST'])
+def fetch_set_data():
+    data = request.json
+    hw_set_name = data.get('hwSetName')
+    hw_set_data = Database.fetch_hardware_set(hw_set_name)
+    if hw_set_data:
+        hw_set_data['_id'] = str(hw_set_data['_id'])
+        return jsonify({"hwSet": hw_set_data, "code": 200}), 201
+    return jsonify({"error": "Hardware set not found", "code": 404}), 404
+
+@app.route('/checkin', methods=['POST'])
+def checkin():
+    data = request.json
+    hw_set_name = data.get('hwSetName')
+    quantity = int(data.get('quantity'))
+    if Database.update_checkin_availability(hw_set_name, quantity):
+        return jsonify({"message": f"Successfully checked in {quantity} units to {hw_set_name}.", "code": 200}), 201
+    print("CANNOT CHECK IN: ", quantity)
+    return jsonify({"error": f"Unable to checkin {quantity} units to {hw_set_name} due to exceeding the capacity limit.", "code": 404}), 404
+
+@app.route('/checkout', methods=['POST'])
+def checkout():
+    data = request.json
+    hw_set_name = data.get('hwSetName')
+    quantity = int(data.get('quantity'))
+    if Database.update_checkout_availability(hw_set_name, quantity):
+        return jsonify({"message": f"Successfully checked out {quantity} units from {hw_set_name}.", "code": 200}), 201
+    return jsonify({"error": f"Unable to checkout {quantity} units from {hw_set_name} due to insufficient available units.", "code": 404}), 404
 
 @app.route('/')
 @cross_origin()
