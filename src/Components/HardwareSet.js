@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import Logout from './Logout';
 import axios from 'axios';
-// import Back from './Back';
 
 function HardwareSet() {
     const location = useLocation();
@@ -38,24 +37,20 @@ function HardwareSet() {
     };
 
     const updateHardwareSet = async (hwSetName, quantity, activity) => {
-        console.log('UPDATING HARDWARE SETS');
         const endpoint = `http://localhost:5000/${activity}`;
         try {
             const response = await axios.post(endpoint, { hwSetName, quantity });
             const data = response.data;
             if (data.code === 200) {
-                // Update local state to reflect the new availability
                 if (hwSetName === 'HWSet1') {
-                    setHwSet1(prev => ({ ...prev, availability: activity === 'checkin' ? Math.min(prev.capacity, prev.availability + quantity) : Math.max(0, prev.availability - quantity) }));
+                    setHwSet1(prev => ({ ...prev, availability: activity === 'checkin' ? prev.availability + quantity : prev.availability - quantity }));
                 } else if (hwSetName === 'HWSet2') {
-                    setHwSet2(prev => ({ ...prev, availability: activity === 'checkin' ? Math.min(prev.capacity, prev.availability + quantity) : Math.max(0, prev.availability - quantity) }));
+                    setHwSet2(prev => ({ ...prev, availability: activity === 'checkin' ? prev.availability + quantity : prev.availability - quantity }));
                 }
-                alert(data.message); // Display success message
-            } else {
-                alert(data.error); // Display error message
-            }
+                alert(data.message); 
+            } 
         } catch (error) {
-            console.error("Error updating hardware set:", error);
+            alert("Unable to check in requested units due to capacity limit exceeded."); 
         }
     };
 
@@ -64,7 +59,7 @@ function HardwareSet() {
         if (!isNaN(requestNumber) && requestNumber > 0) {
             updateHardwareSet(hwSet.name, requestNumber, 'checkin');
         } else {
-            alert('Please enter a valid positive number');
+            alert('Enter a valid positive number');
         }
     };
 
@@ -74,7 +69,7 @@ function HardwareSet() {
             console.log('Checking out', requestNumber, 'from', hwSet.name);
             updateHardwareSet(hwSet.name, requestNumber, 'checkout');
         } else {
-            alert('Please enter a valid positive number');
+            alert('Enter a valid positive number');
         }
     };
 

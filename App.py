@@ -133,7 +133,6 @@ def checkin():
     quantity = int(data.get('quantity'))
     if Database.update_checkin_availability(hw_set_name, quantity):
         return jsonify({"message": f"Successfully checked in {quantity} units to {hw_set_name}.", "code": 200}), 201
-    print("CANNOT CHECK IN: ", quantity)
     return jsonify({"error": f"Unable to checkin {quantity} units to {hw_set_name} due to exceeding the capacity limit.", "code": 404}), 404
 
 @app.route('/checkout', methods=['POST'])
