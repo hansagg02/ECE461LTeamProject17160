@@ -6,8 +6,8 @@ import axios from 'axios';
 function HardwareSet() {
     const location = useLocation();
     const projectName = location.state?.projectName || 'ProjectName';
-    const [hwSet1, setHwSet1] = useState({ name: 'HWSet1', capacity: 100, availability: 100 });
-    const [hwSet2, setHwSet2] = useState({ name: 'HWSet2', capacity: 100, availability: 100 });
+    const [hwSet1, setHwSet1] = useState({ name: 'HWSet1', capacity: 0, availability: 0 });
+    const [hwSet2, setHwSet2] = useState({ name: 'HWSet2', capacity: 0, availability: 0 });
     const [requestSet1, setRequestSet1] = useState('');
     const [requestSet2, setRequestSet2] = useState('');
 
@@ -50,7 +50,11 @@ function HardwareSet() {
                 alert(data.message); 
             } 
         } catch (error) {
-            alert("Unable to check in requested units due to capacity limit exceeded."); 
+            if (activity === 'checkin') {
+                alert("Unable to check in requested units due to capacity limit exceeded."); 
+            } else {
+                alert("Unable to check out requested units due to insufficient available units."); 
+            }
         }
     };
 
@@ -78,7 +82,6 @@ function HardwareSet() {
             <Logout/> 
             <h1>{projectName}</h1>
             <div>
-                {/* HWSet1 Section */}
                 <h2>{hwSet1.name}</h2>
                 <div>
                     <p>Capacity: {hwSet1.capacity}</p>
@@ -96,7 +99,6 @@ function HardwareSet() {
                 </div>
             </div>
             <div>
-                {/* HWSet2 Section */}
                 <h2>{hwSet2.name}</h2>
                 <div>
                     <p>Capacity: {hwSet2.capacity}</p>
