@@ -6,7 +6,6 @@ import Projects from './Components/Project';
 import HardwareSet from './Components/HardwareSet';
 
 function App() {
-
   return (
     <div>
       <Router>

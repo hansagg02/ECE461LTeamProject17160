@@ -28,6 +28,11 @@ def user_exists(userID):
         return True
     return False
 
+def password_exists(password):
+    if users.find_one({"password": password}):
+        return True
+    return False
+
 def create_user(username, userID, password):
     new_user = {
             "username" :username,
@@ -84,7 +89,6 @@ def get_project_name(userID, projectID):
     return project_name
 
 def fetch_hardware_set(hw_set_name):
-    print("FETCHING HW DATA for ", hw_set_name)
     hw_set = hardware_sets.find_one({"name": hw_set_name})
     return hw_set
 

@@ -49,13 +49,9 @@ function Login() {
       
       if (response.data.code === 200) {
         navigate('/projects', { state: { userID } });
-      } else {
-        // Handle login error
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      } 
     } catch (error) {
-      // Handle network error
-      setLoginMessage("Failed to log in account: " + error.message);
+      setLoginMessage("Please enter a valid userID and password");
     }
   };
 
@@ -71,13 +67,10 @@ function Login() {
       
       if (response.data.code === 200) {
         navigate('/projects', { state: { newUserID } });
-      } else {
-        // Handle sign up error
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      } 
+
     } catch (error) {
-      // Handle network error
-      setLoginMessage("Failed to create account: " + error.message);
+      setSignupMessage("Failed to create account: User already exists");
     }     
   };
 
