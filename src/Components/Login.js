@@ -51,7 +51,7 @@ function Login() {
         navigate('/projects', { state: { userID } });
       } 
     } catch (error) {
-      setLoginMessage("Please enter correct userID and password");
+      setLoginMessage("Please enter a valid userID and password");
     }
   };
 

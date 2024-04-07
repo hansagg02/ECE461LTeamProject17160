@@ -9,17 +9,12 @@ function Projects() {
     const navigate = useNavigate();
     const location = useLocation();
     const userID = location.state?.userID || location.state?.newUserID || ''; 
-    const [user, setUser] = useState({ username: '', id: '', valid: false });
     const [projectName, setProjectName] = useState('');
     const [description, setDescription] = useState('');
     const [projectID, setProjectId] = useState('');
-    const [projectjoinId, setProjectjoinId] = useState('');
     const [projectMessage, setProjectMessage] = useState('');
     const [joinMessage, setJoinMessage] = useState('');
     const [joinProjectID, setJoinProjectId] = useState('');
-    const [userProjects, setUserProjects] = useState([]);
-    const [loggedIn, setLoggedIn] = useState(true);
-
 
     const handleSetProjectName = (event) => {
             setProjectName(event.target.value);
@@ -32,10 +27,6 @@ function Projects() {
     const handleSetProjectId = (event) => {
          setProjectId(event.target.value);
      }
-
-    const handleSetjoinMessage = (event) => {
-        setJoinMessage(event.target.value);
-    }
 
     const handleSetJoinProjectId = (event) => { 
         setJoinProjectId(event.target.value);
