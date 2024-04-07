@@ -84,7 +84,7 @@ function Projects() {
                 </label>
                 <br /><br />
                 <label>
-                    Project ID
+                    Project ID:
                     <input type="text" value={projectID} onChange={handleSetProjectId} placeholder="project id" required />
                 </label>
                 <br /><br />
@@ -95,7 +95,7 @@ function Projects() {
             <h3>Join Project</h3>
             <form onSubmit = {handleJoinProject}>
                 <label>
-                    Project ID
+                    Project ID:
                     <input
                         type="text"
                         value = {joinProjectID}
