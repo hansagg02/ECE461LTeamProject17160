@@ -64,7 +64,11 @@ def signup():
     # Check if user already exists
     if Database.user_exists(newUserID):
         return jsonify({"error": "User already exists", "code": 409}), 409
-
+    
+    # Check if password is already used 
+    if Database.password_exists(encrypted_password):
+        return jsonify({"error": "Password already exists", "code": 409}), 409
+    
     # Create the user in the database
     Database.create_user(username, newUserID, encrypted_password)
 

@@ -1,8 +1,7 @@
 
     
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
-import {useLocation} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import Logout from './Logout';
 
@@ -53,13 +52,10 @@ function Projects() {
             });
     
             if (response.data.code === 200) {
-                setProjectMessage("Project created successfully!");
-                navigate('/hardware', { state: { projectName: projectName } });
-            } else {
-                setProjectMessage("Response code: " + response.data.code + " Response message: " + response.data.error);
-            }
+                navigate('/hardware', { state: { userID: userID, projectName: projectName } });
+            } 
         } catch (error) {
-            setProjectMessage("Error creating project: " + error.message);
+            setProjectMessage("Error creating project: Project ID already exists.");
         }
         
     };
@@ -72,12 +68,10 @@ function Projects() {
                 userID
             });
             if (response.data.code === 200) {
-                navigate('/hardware', { state: { projectName: response.data.projectName } });
-            } else {
-                setJoinMessage("Response code: " + response.data.code + " Response message: " + response.data.error);
-            }
+                navigate('/hardware', { state: { userID: userID, projectName: response.data.projectName } });
+            } 
         } catch (error) {
-            setJoinMessage("Error joining project: " + error.message);
+            setJoinMessage("Error joining project: Project ID does not exist");
         }
         
     };
@@ -85,6 +79,7 @@ function Projects() {
     return (
         <div>
             <Logout/> 
+            <br /><br />
             <h3>Create project</h3>
             <form onSubmit={handleCreateProject}>
                 <label>

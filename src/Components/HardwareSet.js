@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Logout from './Logout';
 import axios from 'axios';
 
 function HardwareSet() {
     const location = useLocation();
     const projectName = location.state?.projectName || 'ProjectName';
+    const userID = location.state?.userID || ''; 
     const [hwSet1, setHwSet1] = useState({ name: 'HWSet1', capacity: 0, availability: 0 });
     const [hwSet2, setHwSet2] = useState({ name: 'HWSet2', capacity: 0, availability: 0 });
     const [requestSet1, setRequestSet1] = useState('');
@@ -77,9 +78,22 @@ function HardwareSet() {
         }
     };
 
+    const Back = () => {
+        const navigate = useNavigate();
+        const handleBack = () => {
+            navigate(`/projects`, { state: { userID: userID } });
+        }; 
+    
+        return (
+            <button onClick={handleBack}>Back to Projects</button>
+        );
+    };
+
     return (
         <div>
             <Logout/> 
+            <br /><br />
+            <Back/>
             <h1>{projectName}</h1>
             <div>
                 <h2>{hwSet1.name}</h2>
