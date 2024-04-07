@@ -4,12 +4,11 @@ from pymongo.server_api import ServerApi
 uri = "mongodb+srv://nandrea:Spring2024@cluster0.8tk3g9l.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 # Create a new client and connect to the server
 client = MongoClient(uri, server_api=ServerApi('1'))
-print("MongoDB URI: ", uri)
 
 ResourceDB = client["Resource"]
 hardware_sets = ResourceDB["Hardware"]
 
-def initialize_hardware_sets():
+def initialize_hardware_database():
     default_sets = [
         {"name": "HWSet1", "capacity": 100, "availability": 100},
         {"name": "HWSet2", "capacity": 100, "availability": 100}
@@ -18,7 +17,7 @@ def initialize_hardware_sets():
         if not hardware_sets.find_one({"name": hw_set["name"]}):
             hardware_sets.insert_one(hw_set)
 
-initialize_hardware_sets()
+initialize_hardware_database()
 
 UserDB = client["Users"]
 users = UserDB["users1"]
