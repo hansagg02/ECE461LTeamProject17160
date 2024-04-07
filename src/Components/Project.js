@@ -2,28 +2,24 @@
     
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
+import {useLocation} from 'react-router-dom';
+import axios from 'axios';
 import Logout from './Logout';
 
 function Projects() {
     const navigate = useNavigate();
+    const location = useLocation();
+    const userID = location.state?.userID || location.state?.newUserID || ''; 
     const [user, setUser] = useState({ username: '', id: '', valid: false });
     const [projectName, setProjectName] = useState('');
     const [description, setDescription] = useState('');
-    const [projectId, setProjectId] = useState('');
+    const [projectID, setProjectId] = useState('');
     const [projectjoinId, setProjectjoinId] = useState('');
     const [projectMessage, setProjectMessage] = useState('');
     const [joinMessage, setJoinMessage] = useState('');
-    const [joinProjectId, setJoinProjectId] = useState('');
+    const [joinProjectID, setJoinProjectId] = useState('');
     const [userProjects, setUserProjects] = useState([]);
     const [loggedIn, setLoggedIn] = useState(true);
-
-    const handleLogout = () => {
-        // Implement your logout logic here
-        setLoggedIn(false);
-        // Clear any authentication tokens or user data from local storage
-        // localStorage.removeItem('token');
-    };
-
 
 
     const handleSetProjectName = (event) => {
@@ -46,113 +42,51 @@ function Projects() {
         setJoinProjectId(event.target.value);
     }
 
-    // useEffect(() => {
-    //     if (location.state) {
-    //         const { username, id, valid } = location.state;
-    //         if (valid) {
-    //             setUser({ username, id, valid });
-    //         } else {
-    //             navigate("/signin");
-    //         }
-    //     }
-    //     fetchUserProjects();
-    // }, [location, navigate]);
-
-
-    const handleSubmit = async (event) => {
+    const handleCreateProject = async (event) => {
         event.preventDefault();
-        setProjectMessage("Project created successfully!");
-        navigate('/hardware', { state: { projectName: projectName } });
-        // const userId = localStorage.getItem("userId");
-        // const data = { projectName, description, projectId, userId };
-        // const response = await fetch('/create_project', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify(data),
-        // });
-
-        // const responseData = await response.json();
-
-        // if (response.ok) {
-        //     setProjectMessage("Project created successfully!");
-        //     navigate('/resources', { state: { projectName: projectName } });
-        // } else {
-        //     setProjectMessage("Error creating project: " + responseData.error);
-        // }
-    };
-
-    const handleSubmit2 = async (event) => {
-        event.preventDefault();
-        const data = { 'projectId': joinProjectId, 'userId': localStorage.getItem("userId") };
-        const response = await fetch('/join_project', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        });
-        const responseData = await response.json();
-    
-        if (response.ok) {  
-            setJoinMessage("Project joined successfully!");
-    
-            // Fetch project details after successfully joining the project
-            const projectResponse = await fetch(`/get_user_projects`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ 'userId': localStorage.getItem("userId") }),
+        try {
+            const response = await axios.post('http://localhost:5000/create_project', {
+                projectName,
+                description,
+                projectID,
+                userID
             });
-            const projectData = await projectResponse.json();
     
-            // Find the joined project in the user's projects list
-            const joinedProject = projectData.find(project => project.projectId === joinProjectId);
-            // if (joinedProject) {
-            //     // Set projectName based on the fetched project details
-            //     setProjectName(joinedProject.projectName);
-    
-            //     // Navigate to the resources page with the updated projectName state
-            //     navigate('/resources', { state: { projectName: joinedProject.projectName } });
-            // } else {
-            //     // Handle error if the joined project is not found
-            //     setJoinMessage("Error: Joined project details not found");
-            // }
-        } else {
-            // Handle error if joining project fails
-            setJoinMessage("Error joining project: " + responseData.error);
+            if (response.data.code === 200) {
+                setProjectMessage("Project created successfully!");
+                navigate('/hardware', { state: { projectName: projectName } });
+            } else {
+                setProjectMessage("Response code: " + response.data.code + " Response message: " + response.data.error);
+            }
+        } catch (error) {
+            setProjectMessage("Error creating project: " + error.message);
         }
+        
     };
 
-    const fetchUserProjects = async () => {
-        const userId = localStorage.getItem("userId");
-        const response = await fetch('/get_user_projects', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ 'userId': userId }),
-        });
-        const responseData = await response.json();
-
-        if (response.ok) {
-            setUserProjects(responseData);
-        } else {
-            console.error("Error fetching user projects:", responseData.error);
+    const handleJoinProject = async (event) => {
+        event.preventDefault();
+        try {
+            const response = await axios.post('http://localhost:5000/join_project', {
+                joinProjectID,
+                userID
+            });
+            if (response.data.code === 200) {
+                navigate('/hardware', { state: { projectName: response.data.projectName } });
+            } else {
+                setJoinMessage("Response code: " + response.data.code + " Response message: " + response.data.error);
+            }
+        } catch (error) {
+            setJoinMessage("Error joining project: " + error.message);
         }
+        
     };
-
-    // const handleProjectClick = (projectName) => {
-    //     navigate('/resources', { state: { projectName: projectName } });
-    // };
    
     return (
         <div>
             <Logout/> 
             <h3>Create project</h3>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleCreateProject}>
                 <label>
                     Project Name:
                     <input type="text" value={projectName} onChange={handleSetProjectName} placeholder="project name" required />
@@ -165,7 +99,7 @@ function Projects() {
                 <br /><br />
                 <label>
                     Project ID
-                    <input type="text" value={projectId} onChange={handleSetProjectId} placeholder="project id" required />
+                    <input type="text" value={projectID} onChange={handleSetProjectId} placeholder="project id" required />
                 </label>
                 <br /><br />
                 <button type="submit">Create Project</button>
@@ -173,12 +107,12 @@ function Projects() {
             {projectMessage && <p>{projectMessage}</p>}
             <br />
             <h3>Join Project</h3>
-            <form onSubmit = {handleSubmit2}>
+            <form onSubmit = {handleJoinProject}>
                 <label>
                     Project ID
                     <input
                         type="text"
-                        value = {joinProjectId}
+                        value = {joinProjectID}
                         onChange={handleSetJoinProjectId}
                         placeholder="project id"
                         required
@@ -191,13 +125,5 @@ function Projects() {
         </div>
     );
 }
-
-const Project = () => {
-    return (
-      <>
-          <Projects username="User" message="ok" />
-      </>
-    );
-  };
 
 export default Projects;
