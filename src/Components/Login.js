@@ -11,8 +11,6 @@ function Login() {
   const [newUserID, setNewUserID] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [loginMessage, setLoginMessage] = useState('');
-  const [signupMessage, setSignupMessage] = useState('');
 
   const handleUsernameChange = (e) => {
     setUsername(e.target.value);
@@ -51,14 +49,14 @@ function Login() {
         navigate('/projects', { state: { userID } });
       } 
     } catch (error) {
-      setLoginMessage("Please enter a valid userID and password");
+      alert("Please enter a valid userID and password");
     }
   };
 
   const handleSignup = async (e) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
-        setSignupMessage('Passwords do not match');
+        alert('Passwords do not match');
         return;
     }
    
@@ -70,7 +68,7 @@ function Login() {
       } 
 
     } catch (error) {
-      setSignupMessage("Failed to create account: User already exists");
+      alert("Failed to create account: User already exists");
     }     
   };
 
@@ -85,7 +83,6 @@ function Login() {
         <input type="password" value={password} onChange={handlePasswordChange} placeholder="Password" required />
         <br />
         <button type="submit">Login</button>
-        <p>{loginMessage}</p>
       </form>
 
       <br /><br /><br /><br />
@@ -100,7 +97,6 @@ function Login() {
         <input type="password" value={confirmPassword} onChange={handleConfirmPasswordChange} placeholder="Confirm Password" required />
         <br />
         <button type="submit">Sign Up</button>
-        <p>{signupMessage}</p>
       </form>
     </div>
   );

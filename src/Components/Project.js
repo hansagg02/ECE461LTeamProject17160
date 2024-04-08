@@ -10,8 +10,6 @@ function Projects() {
     const [projectName, setProjectName] = useState('');
     const [description, setDescription] = useState('');
     const [createProjectID, setCreateProjectID] = useState('');
-    const [createMessage, setCreateMessage] = useState('');
-    const [joinMessage, setJoinMessage] = useState('');
     const [joinProjectID, setJoinProjectID] = useState('');
 
     const handleSetProjectName = (event) => {
@@ -44,7 +42,7 @@ function Projects() {
                 navigate('/hardware', { state: { userID: userID, projectName: projectName } });
             } 
         } catch (error) {
-            setCreateMessage("Error creating project: Project ID already exists.");
+            alert("Error creating project: Project ID already exists.");
         }
         
     };
@@ -60,7 +58,7 @@ function Projects() {
                 navigate('/hardware', { state: { userID: userID, projectName: response.data.projectName } });
             } 
         } catch (error) {
-            setJoinMessage("Error joining project: Project ID does not exist");
+            alert("Error joining project: Project ID does not exist");
         }
         
     };
@@ -81,7 +79,6 @@ function Projects() {
                 <input type="text" value={createProjectID} onChange={handleSetCreateProjectID} placeholder="ProjectID" required />
                 <br /><br />
                 <button type="submit">Create Project</button>
-                <p>{createMessage}</p>
             </form> 
             <br /><br /><br />
             <h2>Join Existing Project</h2>
@@ -90,7 +87,6 @@ function Projects() {
                 <br />
                 <input type="text" value={joinProjectID} onChange={handleSetJoinProjectID} placeholder="ProjectID" required />
                 <button type="submit">Join Project</button>
-                <p>{joinMessage}</p>
             </form>
         </div>
     );
