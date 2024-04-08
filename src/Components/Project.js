@@ -1,6 +1,4 @@
-
-    
-import React, { useState, useEffect } from 'react';
+import React, { useState} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import Logout from './Logout';
@@ -11,10 +9,10 @@ function Projects() {
     const userID = location.state?.userID || location.state?.newUserID || ''; 
     const [projectName, setProjectName] = useState('');
     const [description, setDescription] = useState('');
-    const [projectID, setProjectId] = useState('');
+    const [projectID, setProjectID] = useState('');
     const [projectMessage, setProjectMessage] = useState('');
     const [joinMessage, setJoinMessage] = useState('');
-    const [joinProjectID, setJoinProjectId] = useState('');
+    const [joinProjectID, setJoinProjectID] = useState('');
 
     const handleSetProjectName = (event) => {
             setProjectName(event.target.value);
@@ -24,12 +22,12 @@ function Projects() {
             setDescription(event.target.value);
         }
     
-    const handleSetProjectId = (event) => {
-         setProjectId(event.target.value);
+    const handleSetProjectID = (event) => {
+         setProjectID(event.target.value);
      }
 
-    const handleSetJoinProjectId = (event) => { 
-        setJoinProjectId(event.target.value);
+    const handleSetJoinProjectID = (event) => { 
+        setJoinProjectID(event.target.value);
     }
 
     const handleCreateProject = async (event) => {
@@ -71,42 +69,28 @@ function Projects() {
         <div>
             <Logout/> 
             <br /><br />
-            <h3>Create project</h3>
+            <h2>Create Project</h2>
             <form onSubmit={handleCreateProject}>
-                <label>
-                    Project Name:
-                    <input type="text" value={projectName} onChange={handleSetProjectName} placeholder="project name" required />
-                </label>
+                Project Name:
+                <input type="text" value={projectName} onChange={handleSetProjectName} placeholder="Project Name" required />
                 <br /><br />
-                <label>
-                    Description:
-                    <input type="text" value={description} onChange={handleSetDescription} placeholder="description" required />
-                </label>
+                Description:
+                <input type="text" value={description} onChange={handleSetDescription} placeholder="Description" required />
                 <br /><br />
-                <label>
-                    Project ID:
-                    <input type="text" value={projectID} onChange={handleSetProjectId} placeholder="project id" required />
-                </label>
+                Project ID:
+                <input type="text" value={projectID} onChange={handleSetProjectID} placeholder="ProjectID" required />
                 <br /><br />
                 <button type="submit">Create Project</button>
+                <p>{projectMessage}</p>
             </form> 
-            {projectMessage && <p>{projectMessage}</p>}
-            <br />
-            <h3>Join Project</h3>
+            <br /><br /><br />
+            <h2>Join Existing Project</h2>
             <form onSubmit = {handleJoinProject}>
-                <label>
-                    Project ID:
-                    <input
-                        type="text"
-                        value = {joinProjectID}
-                        onChange={handleSetJoinProjectId}
-                        placeholder="project id"
-                        required
-                    />
-                </label>
-                <br /><br />
+            Project Name:
+                <br />
+                <input type="text" value={joinProjectID} onChange={handleSetJoinProjectID} placeholder="ProjectID" required />
                 <button type="submit">Join Project</button>
-                {joinMessage && <p>{joinMessage}</p>}
+                <p>{joinMessage}</p>
             </form>
         </div>
     );
