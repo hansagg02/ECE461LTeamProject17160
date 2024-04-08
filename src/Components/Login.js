@@ -5,10 +5,10 @@ import axios from 'axios';
 function Login() {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
-  const [userID, setUserId] = useState('');
+  const [userID, setUserID] = useState('');
   const [password, setPassword] = useState('');
   const [newUsername, setNewUsername] = useState('');
-  const [newUserID, setNewUserId] = useState('');
+  const [newUserID, setNewUserID] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loginMessage, setLoginMessage] = useState('');
@@ -19,7 +19,7 @@ function Login() {
   };
   
   const handleUserIDChange = (e) => {
-    setUserId(e.target.value);
+    setUserID(e.target.value);
   };
   
   const handlePasswordChange = (e) => {
@@ -31,7 +31,7 @@ function Login() {
   };
   
   const handleNewUserIDChange = (e) => {
-    setNewUserId(e.target.value);
+    setNewUserID(e.target.value);
   };
   
   const handleNewPasswordChange = (e) => {

@@ -90,7 +90,7 @@ def login():
        Database.update_username(userID, username)
        return jsonify({"message": "User logged in successfully", "code": 200}), 200
         
-    return jsonify({"message": "Invalid login credentials", "code": 401}), 401
+    return jsonify({"error": "Invalid login credentials", "code": 401}), 401
 
 @app.route('/create_project', methods=['POST'])
 def create_project():
@@ -144,6 +144,7 @@ def checkout():
     data = request.json
     hw_set_name = data.get('hwSetName')
     quantity = int(data.get('quantity'))
+    
     if Database.update_checkout_availability(hw_set_name, quantity):
         return jsonify({"message": f"Successfully checked out {quantity} units from {hw_set_name}.", "code": 200}), 201
     return jsonify({"error": f"Unable to checkout {quantity} units from {hw_set_name} due to insufficient available units.", "code": 404}), 404

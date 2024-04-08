@@ -2,22 +2,31 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
 uri = "mongodb+srv://nandrea:Spring2024@cluster0.8tk3g9l.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
-# Create a new client and connect to the server
 client = MongoClient(uri, server_api=ServerApi('1'))
 
 ResourceDB = client["Resource"]
 hardware_sets = ResourceDB["Hardware"]
 
-def initialize_hardware_database():
-    default_sets = [
-        {"name": "HWSet1", "capacity": 100, "availability": 100},
-        {"name": "HWSet2", "capacity": 100, "availability": 100}
-    ]
-    for hw_set in default_sets:
-        if not hardware_sets.find_one({"name": hw_set["name"]}):
-            hardware_sets.insert_one(hw_set)
-
-initialize_hardware_database()
+def initialize_hardware_set_database():
+    hardware_set1 = {
+        "name": "HWSet1", 
+        "capacity": 100, 
+        "availability": 100
+    }
+    # Insert HWSet1 if not in database
+    if not hardware_sets.find_one({"name": "HWSet1"}):
+        hardware_sets.insert_one(hardware_set1)
+    
+    hardware_set2 = {
+        "name": "HWSet2", 
+        "capacity": 100, 
+        "availability": 100
+    }
+    # Insert HWSet2 if not in database
+    if not hardware_sets.find_one({"name": "HWSet2"}):
+        hardware_sets.insert_one(hardware_set2)
+ 
+initialize_hardware_set_database()
 
 UserDB = client["Users"]
 users = UserDB["users1"]

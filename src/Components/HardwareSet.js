@@ -7,23 +7,22 @@ function HardwareSet() {
     const location = useLocation();
     const projectName = location.state?.projectName || 'ProjectName';
     const userID = location.state?.userID || ''; 
-    const [hwSet1, setHwSet1] = useState({ name: 'HWSet1', capacity: 0, availability: 0 });
-    const [hwSet2, setHwSet2] = useState({ name: 'HWSet2', capacity: 0, availability: 0 });
-    const [requestSet1, setRequestSet1] = useState('');
-    const [requestSet2, setRequestSet2] = useState('');
+    const [set1, setHwSet1] = useState({ name: 'HWSet1', capacity: 0, availability: 0 });
+    const [set2, setHwSet2] = useState({ name: 'HWSet2', capacity: 0, availability: 0 });
+    const [quantitySet1, setQuantitySet1] = useState('');
+    const [quantitySet2, setQuantitySet2] = useState('');
 
     useEffect(() => {
-        fetchHardwareSets();
+        renderHardwareSets();
     }, []);
 
-    const fetchHardwareSets = async () => {
+    const renderHardwareSets = async () => {
         const fetchHardwareSetData = async (hwSetName) => {
             try {
                 const response = await axios.post(`http://localhost:5000/fetch_set_data`, { hwSetName });
                 return response.data.hwSet;
             } catch (error) {
-                console.error("Error fetching hardware sets:", error);
-                throw new Error('Failed to fetch');
+                console.error("Unable to fetch hardware sets:", error);
             }
         };
 
@@ -37,44 +36,59 @@ function HardwareSet() {
         }
     };
 
-    const updateHardwareSet = async (hwSetName, quantity, activity) => {
-        const endpoint = `http://localhost:5000/${activity}`;
+    const updateCheckIn = async (hwSetName, quantity) => {
         try {
-            const response = await axios.post(endpoint, { hwSetName, quantity });
+            const response = await axios.post('http://localhost:5000/checkin', { hwSetName, quantity });
             const data = response.data;
             if (data.code === 200) {
                 if (hwSetName === 'HWSet1') {
-                    setHwSet1(prev => ({ ...prev, availability: activity === 'checkin' ? prev.availability + quantity : prev.availability - quantity }));
+                    setHwSet1(prev => ({ ...prev, availability: prev.availability + quantity }));
                 } else if (hwSetName === 'HWSet2') {
-                    setHwSet2(prev => ({ ...prev, availability: activity === 'checkin' ? prev.availability + quantity : prev.availability - quantity }));
+                    setHwSet2(prev => ({ ...prev, availability: prev.availability + quantity }));
                 }
                 alert(data.message); 
             } 
         } catch (error) {
-            if (activity === 'checkin') {
-                alert("Unable to check in requested units due to capacity limit exceeded."); 
-            } else {
-                alert("Unable to check out requested units due to insufficient available units."); 
-            }
+            alert("Unable to check in requested units due to capacity limit exceeded."); 
+        }
+    }
+
+    const handleCheckIn = (hwSetName, userInput) => {
+        const quantity = parseInt(userInput);
+        if (isNaN(quantity)) {
+            alert('Enter a valid number');
+        } else if (quantity <= 0) {
+            alert('Please enter a positive quantity')
+        }else {
+            updateCheckIn(hwSetName, quantity)
         }
     };
 
-    const handleCheckIn = (hwSet, request) => {
-        const requestNumber = parseInt(request, 10);
-        if (!isNaN(requestNumber) && requestNumber > 0) {
-            updateHardwareSet(hwSet.name, requestNumber, 'checkin');
-        } else {
-            alert('Enter a valid positive number');
+    const updateCheckOut = async (hwSetName, quantity) => {
+        try {
+            const response = await axios.post('http://localhost:5000/checkout', { hwSetName, quantity });
+            const data = response.data;
+            if (data.code === 200) {
+                if (hwSetName === 'HWSet1') {
+                    setHwSet1(prev => ({ ...prev, availability: prev.availability - quantity }));
+                } else if (hwSetName === 'HWSet2') {
+                    setHwSet2(prev => ({ ...prev, availability: prev.availability - quantity }));
+                }
+                alert(data.message); 
+            } 
+        } catch (error) {
+            alert("Unable to check out requested units due to insufficient available units."); 
         }
-    };
+    }
 
-    const handleCheckOut = (hwSet, request) => {
-        const requestNumber = parseInt(request, 10);
-        if (!isNaN(requestNumber) && requestNumber > 0) {
-            console.log('Checking out', requestNumber, 'from', hwSet.name);
-            updateHardwareSet(hwSet.name, requestNumber, 'checkout');
+    const handleCheckOut = (hwSetName, userInput) => {
+        const quantity = parseInt(userInput);
+        if (isNaN(quantity)) {
+            alert('Enter a valid number');
+        } else if (quantity <= 0) {
+            alert('Please enter a positive quantity')
         } else {
-            alert('Enter a valid positive number');
+            updateCheckOut(hwSetName, quantity);
         }
     };
 
@@ -95,40 +109,20 @@ function HardwareSet() {
             <br /><br />
             <Back/>
             <h1>{projectName}</h1>
-            <div>
-                <h2>{hwSet1.name}</h2>
-                <div>
-                    <p>Capacity: {hwSet1.capacity}</p>
-                    <p>Availability: {hwSet1.availability}</p>
-                </div>
-                <div>
-                    <input
-                        type="number"
-                        value={requestSet1}
-                        onChange={(e) => setRequestSet1(e.target.value)}
-                        placeholder="request"
-                    />
-                    <button onClick={() => handleCheckIn(hwSet1, requestSet1)}>Check In</button>
-                    <button onClick={() => handleCheckOut(hwSet1, requestSet1)}>Check Out</button>
-                </div>
-            </div>
-            <div>
-                <h2>{hwSet2.name}</h2>
-                <div>
-                    <p>Capacity: {hwSet2.capacity}</p>
-                    <p>Availability: {hwSet2.availability}</p>
-                </div>
-                <div>
-                    <input
-                        type="number"
-                        value={requestSet2}
-                        onChange={(e) => setRequestSet2(e.target.value)}
-                        placeholder="request"
-                    />
-                    <button onClick={() => handleCheckIn(hwSet2, requestSet2)}>Check In</button>
-                    <button onClick={() => handleCheckOut(hwSet2, requestSet2)}>Check Out</button>
-                </div>
-            </div>
+            <br />
+                <h2>{set1.name}</h2>
+                <div>Capacity: {set1.capacity} </div>
+                <div>Availability: {set1.availability}</div>
+                <input type="number" value={quantitySet1} onChange={(e) => setQuantitySet1(e.target.value)} placeholder="quantity" />
+                <button onClick={() => handleCheckIn(set1.name, quantitySet1)}>Check In</button>
+                <button onClick={() => handleCheckOut(set1.name, quantitySet1)}>Check Out</button>
+            <br /><br />
+                <h2>{set2.name}</h2>
+                <div>Capacity: {set2.capacity}</div>
+                <div>Availability: {set2.availability}</div>
+                <input type="number" value={quantitySet2} onChange={(e) => setQuantitySet2(e.target.value)} placeholder="quantity"/>
+                <button onClick={() => handleCheckIn(set2.name, quantitySet2)}>Check In</button>
+                <button onClick={() => handleCheckOut(set2.name, quantitySet2)}>Check Out</button>
         </div>
     );
 }
