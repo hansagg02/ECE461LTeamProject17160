@@ -49,7 +49,7 @@ function Login() {
         navigate('/projects', { state: { userID } });
       } 
     } catch (error) {
-      alert("Please enter a valid userID and password");
+      alert("Invalid login credentials");
     }
   };
 
