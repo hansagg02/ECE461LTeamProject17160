@@ -97,7 +97,7 @@ def create_project():
     data = request.json
     projectName = data.get('projectName')
     description = data.get('description')
-    projectID = data.get('projectID')
+    projectID = data.get('createProjectID')
     userID = data.get('userID')
 
     # Check if user already exists
