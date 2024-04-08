@@ -9,21 +9,21 @@ function Projects() {
     const userID = location.state?.userID || location.state?.newUserID || ''; 
     const [projectName, setProjectName] = useState('');
     const [description, setDescription] = useState('');
-    const [projectID, setProjectID] = useState('');
-    const [projectMessage, setProjectMessage] = useState('');
+    const [createProjectID, setCreateProjectID] = useState('');
+    const [createMessage, setCreateMessage] = useState('');
     const [joinMessage, setJoinMessage] = useState('');
     const [joinProjectID, setJoinProjectID] = useState('');
 
     const handleSetProjectName = (event) => {
-            setProjectName(event.target.value);
-        }
+        setProjectName(event.target.value);
+    }
 
     const handleSetDescription = (event) => {
-            setDescription(event.target.value);
-        }
+        setDescription(event.target.value);
+    }
     
-    const handleSetProjectID = (event) => {
-         setProjectID(event.target.value);
+    const handleSetCreateProjectID = (event) => {
+         setCreateProjectID(event.target.value);
      }
 
     const handleSetJoinProjectID = (event) => { 
@@ -36,7 +36,7 @@ function Projects() {
             const response = await axios.post('http://localhost:5000/create_project', {
                 projectName,
                 description,
-                projectID,
+                createProjectID,
                 userID
             });
     
@@ -44,7 +44,7 @@ function Projects() {
                 navigate('/hardware', { state: { userID: userID, projectName: projectName } });
             } 
         } catch (error) {
-            setProjectMessage("Error creating project: Project ID already exists.");
+            setCreateMessage("Error creating project: Project ID already exists.");
         }
         
     };
@@ -78,10 +78,10 @@ function Projects() {
                 <input type="text" value={description} onChange={handleSetDescription} placeholder="Description" required />
                 <br /><br />
                 Project ID:
-                <input type="text" value={projectID} onChange={handleSetProjectID} placeholder="ProjectID" required />
+                <input type="text" value={createProjectID} onChange={handleSetCreateProjectID} placeholder="ProjectID" required />
                 <br /><br />
                 <button type="submit">Create Project</button>
-                <p>{projectMessage}</p>
+                <p>{createMessage}</p>
             </form> 
             <br /><br /><br />
             <h2>Join Existing Project</h2>
